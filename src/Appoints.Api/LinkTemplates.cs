@@ -36,6 +36,11 @@ namespace Appoints.Api
             {
                 get { return new Link("appointments", "~/appointments"); }
             }
+
+            public static Link Appointment
+            {
+                get {  return new Link("appointment", "~/appointments/{id}"); }
+            }
         }
 
         public static class Users

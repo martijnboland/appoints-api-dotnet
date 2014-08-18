@@ -75,7 +75,6 @@ namespace Appoints.Api.Controllers
             var secret = ConfigurationManager.AppSettings["jwt:SecretKey"];
 
             var claims = new List<Claim>();
-//            claims.Add(new Claim("sub", dbUser.Provider + "-" + dbUser.ProviderUserId));
             claims.Add(new Claim(ClaimTypes.NameIdentifier, dbUser.Id.ToString()));
             claims.Add(new Claim(ClaimTypes.Name, dbUser.DisplayName));
             claims.Add(new Claim(ClaimTypes.Email, dbUser.Email));
