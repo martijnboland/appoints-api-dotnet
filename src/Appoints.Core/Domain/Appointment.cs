@@ -20,7 +20,7 @@ namespace Appoints.Core.Domain
 
         public int Duration
         {
-            get { return (EndDateAndTime - StartDateAndTime).Minutes; }
+            get { return (int) (EndDateAndTime - StartDateAndTime).TotalMinutes; }
         }
 
         public string Remarks { get; set; }
@@ -29,7 +29,6 @@ namespace Appoints.Core.Domain
         [ForeignKey("User")]
         public int UserId { get; set; }
 
-        [Required]
         public virtual User User { get; set; }
     }
 }
