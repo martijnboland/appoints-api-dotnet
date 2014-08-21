@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity;
-using System.IdentityModel.Protocols.WSTrust;
 using System.IdentityModel.Tokens;
 using System.Linq;
 using System.Net;
@@ -80,8 +79,8 @@ namespace Appoints.Api.Controllers
             claims.Add(new Claim(ClaimTypes.Email, dbUser.Email));
             claims.AddRange(dbUser.UserRoles.Select(userRole => new Claim(ClaimTypes.Role, userRole.Role.Name)));
 
-            var jwtToken = new JwtSecurityToken(issuer, audience, claims,
-                new Lifetime(DateTime.UtcNow, DateTime.UtcNow.AddMinutes(_tokenHandler.DefaultTokenLifetimeInMinutes)),
+            var jwtToken = new JwtSecurityToken(issuer, audience, claims, null,
+                DateTime.UtcNow.AddMinutes(JwtSecurityTokenHandler.DefaultTokenLifetimeInMinutes),
                 new SigningCredentials(new InMemorySymmetricSecurityKey(Convert.FromBase64String(secret)),
                     SecurityAlgorithms.HmacSha256Signature, SecurityAlgorithms.Sha256Digest));
             var token = _tokenHandler.WriteToken(jwtToken);
