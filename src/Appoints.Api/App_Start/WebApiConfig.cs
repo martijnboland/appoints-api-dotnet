@@ -19,7 +19,7 @@ namespace Appoints.Api
                 );
 
             // Formatters
-            config.Formatters.Add(new JsonHalMediaTypeFormatter());
+            config.Formatters.Insert(0, new JsonHalMediaTypeFormatter());
             config.Formatters.Add(new XmlHalMediaTypeFormatter());
         }
     }

@@ -2,17 +2,19 @@
 using System.Configuration;
 using System.IdentityModel.Tokens;
 using System.Reflection;
+using System.Threading.Tasks;
+using System.Web.Cors;
 using System.Web.Http;
 using Appoints.Core.Data;
 using Autofac;
 using Autofac.Integration.WebApi;
 using Microsoft.Owin;
+using Microsoft.Owin.Cors;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Facebook;
 using Microsoft.Owin.Security.Google;
 using Microsoft.Owin.Security.Jwt;
-using Microsoft.Owin.Security.OAuth;
 using Owin;
 
 [assembly: OwinStartup(typeof (Appoints.Api.Startup))]
@@ -33,11 +35,36 @@ namespace Appoints.Api
             var config = new HttpConfiguration();
             config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
 
+            // CORS
+            var allowedOriginsString = ConfigurationManager.AppSettings["cors:AllowedOrigins"];
+            if (! String.IsNullOrEmpty(allowedOriginsString))
+            {
+                var corsPolicy = new CorsPolicy
+                {
+                    AllowAnyHeader = true,
+                    AllowAnyMethod = true,
+                    SupportsCredentials = true
+                };
+                var allowedOrigins = allowedOriginsString.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var allowedOrigin in allowedOrigins)
+                {
+                    corsPolicy.Origins.Add(allowedOrigin);
+                }
+                app.UseCors(new CorsOptions
+                {
+                    PolicyProvider = new CorsPolicyProvider
+                    {
+                        PolicyResolver = context => Task.FromResult(corsPolicy)
+                    }
+                });                
+            }
+
+            // Authentication/Authorization
             var issuer = ConfigurationManager.AppSettings["jwt:Issuer"];
             var audience = ConfigurationManager.AppSettings["jwt:Audience"];
             var secret = ConfigurationManager.AppSettings["jwt:SecretKey"];
 
-            // Default JWT token based authentication
+            // Default JWT token based authorization
             app.UseJwtBearerAuthentication(
                 new JwtBearerAuthenticationOptions
                 {
@@ -49,6 +76,7 @@ namespace Appoints.Api
                                                    }
                 });
 
+            // Required for 3rd-party login flow.
             var externalCookie = new CookieAuthenticationOptions
                                  {
                                      AuthenticationType = "ExternalCookie",

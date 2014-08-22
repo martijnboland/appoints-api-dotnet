@@ -18,7 +18,6 @@ namespace Appoints.Api.Resources
 
         protected override void CreateHypermedia()
         {
-            Href = LinkTemplates.Appointments.Get.Href;
             Links.Add(new Link { Href = Href, Rel = "self" });
         }
     }

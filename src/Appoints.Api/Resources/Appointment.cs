@@ -17,7 +17,7 @@ namespace Appoints.Api.Resources
 
         public override string Href
         {
-            get { return LinkTemplates.Appointments.Appointment.Href; }
+            get { return LinkTemplates.Appointments.Appointment.CreateLink(new { id }).Href; } // don't do a templated link because angular-hal chokes on it.
             set { }
         }
 

@@ -58,6 +58,61 @@ namespace Appoints.Api.Controllers
             }
         }
 
+        [Route("appointments/{id}")]
+        public async Task<IHttpActionResult> Patch(int id, Appointment appointment)
+        {
+            try
+            {
+                var dbAppointment = await _dbContext.Appointments.FindAsync(id);
+                if (dbAppointment == null)
+                {
+                    return NotFound();
+                }
+                if (appointment.dateAndTime != DateTime.MinValue)
+                {
+                    dbAppointment.StartDateAndTime = appointment.dateAndTime;
+                }
+                if (appointment.endDateAndTime != DateTime.MinValue)
+                {
+                    dbAppointment.EndDateAndTime = appointment.endDateAndTime;
+                }
+                if (appointment.title != null)
+                {
+                    dbAppointment.Title = appointment.title;
+                }
+                if (appointment.remarks != null)
+                {
+                    dbAppointment.Remarks = appointment.remarks;
+                }
+                await _dbContext.SaveChangesAsync();
+                return Ok(MapAppointment(dbAppointment));
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [Route("appointments/{id}")]
+        public async Task<IHttpActionResult> Delete(int id)
+        {
+            try
+            {
+                var dbAppointment = await _dbContext.Appointments.FindAsync(id);
+                if (dbAppointment == null)
+                {
+                    return NotFound();
+                }
+                _dbContext.Appointments.Remove(dbAppointment);
+                await _dbContext.SaveChangesAsync();
+                return Ok(new {message = "Appointment deleted"});
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
         private Appointment MapAppointment(Appoints.Core.Domain.Appointment dbAppointment)
         {
             return new Appointment
