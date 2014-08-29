@@ -296,7 +296,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Web.config" />
+    <None Include="Web.config.example">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -330,6 +332,8 @@
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
+   -->
   <Target Name="AfterBuild">
-  </Target> -->
+    <Exec Command="$(MSBuildProjectDirectory)/../../tools/ctt.exe s:$(MSBuildProjectDirectory)/Web.config.example t:$(MSBuildProjectDirectory)/Web.$(Configuration).config d:$(MSBuildProjectDirectory)/Web.config"/>
+  </Target>
 </Project>
