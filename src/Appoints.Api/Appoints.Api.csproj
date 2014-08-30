@@ -299,6 +299,7 @@
     <None Include="Web.config.example">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Web.Debug.config.example" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -334,6 +335,6 @@
   </Target>
    -->
   <Target Name="AfterBuild">
-    <Exec Command="$(MSBuildProjectDirectory)/../../tools/ctt.exe s:$(MSBuildProjectDirectory)/Web.config.example t:$(MSBuildProjectDirectory)/Web.$(Configuration).config d:$(MSBuildProjectDirectory)/Web.config"/>
+    <Exec Command="$(MSBuildProjectDirectory)/../../tools/ctt.exe s:$(MSBuildProjectDirectory)/Web.config.example t:$(MSBuildProjectDirectory)/Web.$(Configuration).config d:$(MSBuildProjectDirectory)/Web.config preservewhitespace" Condition="Exists('$(MSBuildProjectDirectory)/Web.$(Configuration).config')" />
   </Target>
 </Project>
